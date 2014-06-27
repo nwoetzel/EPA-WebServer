@@ -1,0 +1,15 @@
+source 'https://rubygems.org'
+
+gem "cgi_multipart_eof_fix", "2.5.0"
+gem "daemons", "1.1.9"
+gem "fastthread", "1.0.7"
+gem "gem_plugin", "0.2.3"
+gem "highline", "1.6.15"
+gem "i18n", "0.6.9"
+gem "mongrel", "1.1.5"
+gem "mongrel_cluster", "1.0.5"
+gem "mysql", "2.9.0"
+gem "open4", "1.3.0"
+gem "Platform", "0.4.0"
+gem "popen4", "0.1.2"
+gem "responders", "0.9.3"
