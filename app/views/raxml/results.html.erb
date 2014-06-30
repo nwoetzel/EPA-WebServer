@@ -7,7 +7,7 @@
        <li><%= link_to "#{@names[i]}", :action => 'download' , :file => "#{@files[i]}"%></li>
     <% i = i+1; end %>
     <h3>Software</h3>
-    <li><%= link_to "Treeviewer", :action => 'download' , :file => "#{RAILS_ROOT}/public/data/treeviewer.zip"%></li>
+    <li><%= link_to "Treeviewer", :action => 'download' , :file => Rails.root.join( "public", "data", "treeviewer.zip")%></li>
 
   </div>
   <p>Pleace cite: 

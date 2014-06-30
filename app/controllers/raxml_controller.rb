@@ -15,7 +15,7 @@ class RaxmlController < ApplicationController
   end
 
   def updateServerStatus
-     system "qstat -f > #{RAILS_ROOT}/tmp/files/qstat.log" #update the server capacity utilisation
+     system "qstat -f > " + Rails.root.join( "tmp", "files", "qstat.log") #update the server capacity utilisation
   end
 
   def submit_single_gene
@@ -107,7 +107,7 @@ class RaxmlController < ApplicationController
     # Server capacity utilisation infos
     @slots = 0
     @used_slots = 0
-    q = QstatFileParser.new(RAILS_ROOT+"/tmp/files/qstat.log")
+    q = QstatFileParser.new( Rails.root.join( "tmp", "files", "qstat.log"))
     @slots = q.slots
     @used_slots = q.used_slots
     # submitJob and results should always update the status file. 
@@ -300,7 +300,7 @@ class RaxmlController < ApplicationController
   end
 
   def buildJobDir
-    @directory = "#{RAILS_ROOT}/public/jobs/#{@jobid}/"
+    @directory = Rails.root.join( "public", "jobs", "#{@jobid}/")
     Dir.mkdir(@directory) rescue system("rm -r #{@directory}; mkdir #{@directory}")
   end
 
@@ -333,7 +333,7 @@ class RaxmlController < ApplicationController
 
   def jobIsFinished?(id)
     @raxml = Raxml.find(:first, :conditions => ["jobid = #{id}"]) 
-    path = "#{RAILS_ROOT}/public/jobs/#{id}/"
+    path = Rails.root.join( "public", "jobs", "#{id}/")
     finished = false
     Dir.glob(path+"submit.sh.*"){|file|
       f = File.open(file,'r')
@@ -369,7 +369,7 @@ class RaxmlController < ApplicationController
     @ip_counter = 0;
     @submission_counter = 0;
     @phyloxml_file ="treefile.phyloxml"
-    if File.size(RAILS_ROOT+"/public/jobs/"+jobid+"/"+@phyloxml_file) > 5000000
+    if File.size( Rails.root.join( "public", "jobs", jobid, @phyloxml_file)) > 5000000
       @phyloxml_file = "treefile_no_placements.phyloxml"
     end
     getInfo
@@ -510,7 +510,7 @@ class RaxmlController < ApplicationController
           jobid = value
           rax = Raxml.find(:first,:conditions => ["jobid = #{jobid}"])
           Raxml.destroy(rax.id)
-          command = "rm -r #{RAILS_ROOT}/public/jobs/#{jobid}"
+          command = "rm -r " + Rails.root.join( "public", "jobs", "#{jobid}")
           system command
         end
       end

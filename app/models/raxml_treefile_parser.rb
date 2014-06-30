@@ -1,6 +1,4 @@
-
 require 'pty'
-#RAILS_ROOT = "/home/denis/work/RAxMLWS"
 
 class RaxmlTreefileParser
   
@@ -34,11 +32,11 @@ attr_reader :format, :valid_format, :error ,:data
   def checkTreefileFormatWithJava
     
     random_number = (1+rand(10000))* (1+(10000%(1+rand(10000))))*(1+rand(10000)) #build random number for @filename to avoid collision
-    file = "#{RAILS_ROOT}/tmp/files/#{random_number}_#{@filename}" 
+    file = Rails.root.join( "tmp", "files", "#{random_number}_#{@filename}") 
     f = File.open(file,'wb')
     @data.each {|d| f.write(d)}
     f.close
-    cmd = "java -jar #{RAILS_ROOT}/bioprogs/java/treecheck.jar #{file}"
+    cmd = "java -jar " + Rails.root.join( "bioprogs", "java", "treecheck.jar #{file}")
     # let RAxML check if phylip format is correct
     PTY.spawn(cmd) do |stdin, stdout, pid| 
       

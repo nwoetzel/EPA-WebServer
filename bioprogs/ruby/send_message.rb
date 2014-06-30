@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 
-RAILS_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '../..'))
+Rails.root = File.expand_path(File.join(File.dirname(__FILE__), '../..'))
 require 'net/smtp'
 require "#{File.dirname(__FILE__)}/../../config/environment.rb"
 SERVER_NAME = ENV['SERVER_NAME']

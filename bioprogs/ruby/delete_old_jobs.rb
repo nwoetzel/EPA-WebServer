@@ -1,9 +1,7 @@
 #!/usr/bin/ruby
 
-
-RAILS_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '../..'))
 require "#{File.dirname(__FILE__)}/../../config/environment.rb"
-require "#{RAILS_ROOT}/app/models/raxml.rb"
+require "#{Rails.root}/app/models/raxml.rb"
 SERVER_NAME = ENV['SERVER_NAME']
 
 #Checks the database for jobs that are older than @time. The expired entries are deleted and the corresponding Job directories deleted from the harddrive.
@@ -33,7 +31,7 @@ class DeleteOldJobs
         if time.to_i - create_time.to_i > @time  
           del = del+"#{entry.jobid}, "
           Raxml.destroy(entry.id)
-          command = "rm -r #{RAILS_ROOT}/public/jobs/#{entry.jobid}"
+          command = "rm -r #{Rails.root}/public/jobs/#{entry.jobid}"
           puts command
           system command
           deleted = deleted+1

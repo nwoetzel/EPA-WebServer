@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'popen4'
-require "#{RAILS_ROOT}/app/models/fasta_to_phylip.rb"
+require "fasta_to_phylip.rb"
 
 class RaxmlAlignmentfileParser
   
@@ -169,7 +169,7 @@ attr_reader :format, :valid_format, :error ,:data , :ali_length, :log, :het_mode
   def checkPhylipFormatWithRaxml
     
     random_number = (1+rand(10000))* (1+(10000%(1+rand(10000))))*(1+rand(10000)) #build random number for @filename to avoid collision
-    file = "#{RAILS_ROOT}/tmp/files/#{random_number}_#{@filename}" 
+    file = Rails.root.join(  "tmp", "files", "#{random_number}_#{@filename}") 
     f = File.open(file,'wb')
     @data.each {|d| f.write(d)}
     f.close
@@ -179,7 +179,7 @@ attr_reader :format, :valid_format, :error ,:data , :ali_length, :log, :het_mode
     puts @partition_file
     puts "#############"
 
-    cmd = "#{RAILS_ROOT}/bioprogs/raxml/raxmlHPC-SSE3  -s #{file} -fc -m  #{@het_model} -n #{random_number}"
+    cmd = Rails.root.join( "bioprogs", "raxml", "raxmlHPC-SSE3 -s #{file} -fc -m #{@het_model} -n #{random_number}")
     if !(@partition_file.nil? || @partition_file.eql?(""))
       cmd = cmd + "-q #{@partition_file}"
     end

@@ -46,12 +46,12 @@ class Raxml < ActiveRecord::Base
 
   ## custom validator function that checks the file formats of the uploaded Alignemntfile , Treefile, Partitionfile and the Sequencefile with the unaligned reads.
   def validate
-    jobdir = "#{RAILS_ROOT}/public/jobs/#{self.jobid}/"
+    jobdir = Rails.root.join( "public", "jobs", "#{self.jobid}") + "/"
     if (!(self.alifile.eql?("")) && !(self.treefile.eql?(""))) &&  (!(self.alifile.nil?) && !(self.treefile.nil?))
       a = RaxmlAlignmentfileParser.new(self.alifile, self.substmodel, self.parfile)
       errors.add(:alifile, a.error) if !(a.valid_format)
       if a.valid_format
-        alifile_path =  jobdir+"alignment_file"
+        alifile_path =  jobdir + "alignment_file"
         saveOnDisk(a.data,alifile_path)
         self.alifile = alifile_path
       end
@@ -59,7 +59,7 @@ class Raxml < ActiveRecord::Base
       t = RaxmlTreefileParser.new(self.treefile)
       errors.add(:treefile, t.error) if !(t.valid_format)
       if t.valid_format
-          treefile_path =  jobdir+"tree_file"
+          treefile_path = jobdir + "tree_file"
           saveOnDisk(t.data,treefile_path)
           self.treefile = treefile_path
       end
@@ -68,7 +68,7 @@ class Raxml < ActiveRecord::Base
         p = RaxmlPartitionfileParser.new(self.parfile,a.ali_length)
         errors.add(:parfile, p.error) if !(p.valid_format)
         if p.valid_format
-          parfile_path =  jobdir+"partition_file"
+          parfile_path =  jobdir + "partition_file"
           saveOnDisk(p.data,parfile_path)
           self.parfile = parfile_path
         end
@@ -77,7 +77,7 @@ class Raxml < ActiveRecord::Base
         q = RaxmlQueryfileParser.new(self.queryfile)
         errors.add(:queryfile, q.error) if !(q.valid_format) 
         if q.valid_format
-          queryfile_path =  jobdir+"queryfile"
+          queryfile_path =  jobdir + "queryfile"
           saveOnDisk(q.data,queryfile_path)
           self.queryfile = queryfile_path
         end
@@ -147,9 +147,9 @@ class Raxml < ActiveRecord::Base
     end
     
     # Build shell file  
-    path = "#{RAILS_ROOT}/public/jobs/#{id}"
-    shell_file = "#{RAILS_ROOT}/public/jobs/#{id}/submit.sh"
-    command = "#{RAILS_ROOT}/bioprogs/ruby/raxml_and_send_email.rb"
+    path = Rails.root.join( "public", "jobs", "#{id}")
+    shell_file = Rails.root.join( "public", "jobs", "#{id}", "submit.sh")
+    command = Rails.root.join( "bioprogs", "ruby", "raxml_and_send_email.rb")
     opts.each_key {|k| command  = command+" "+k+" #{opts[k]} "}
     puts command
     File.open(shell_file,'wb'){|file| file.write(command+";echo done!")}
@@ -169,7 +169,7 @@ class Raxml < ActiveRecord::Base
 
   ## Sends the message entered via the contact formular on the webpage to the administrators (Alexi,Simon,Denis)
   def Raxml.sendMessage(name,email,subject,message)  
-    command = "#{RAILS_ROOT}/bioprogs/ruby/send_message.rb "
+    command = Rails.root.join( "bioprogs", "ruby", "send_message.rb ")
     if !(name.nil? || name.eql?(""))
       command = command+" -n #{name} "
     end

@@ -1,6 +1,5 @@
 #!/usr/bin/ruby
 
-RAILS_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '../..'))
 require "#{File.dirname(__FILE__)}/../../config/environment.rb"
 require 'phylip_file_parser'
 
@@ -10,7 +9,7 @@ class BuiltTestDataForMultiGenAlignment
   def initialize(alifile, treefile, parfile,  seqs_for_test)
     @parfile = parfile
     @treefile = treefile
-    command = "#{RAILS_ROOT}/bioprogs/raxml/raxmlHPC-SSE3 -s #{alifile} -m GTRGAMMA -p 12345 -n T1 -fs -t #{treefile} -q #{parfile}"
+    command = Rails.root.join( "bioprogs", "raxml", "raxmlHPC-SSE3") + " -s #{alifile} -m GTRGAMMA -p 12345 -n T1 -fs -t #{treefile} -q #{parfile}"
     system command
     gene = nil
     read_pool = []

@@ -1,12 +1,12 @@
 #!/usr/bin/ruby
 
-RAILS_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '../..'))
+Rails.root = File.expand_path(File.join(File.dirname(__FILE__), '../..'))
 require 'net/smtp'
-require "#{RAILS_ROOT}/bioprogs/ruby/reformat.rb"
+require "#{Rails.root}/bioprogs/ruby/reformat.rb"
 require "#{File.dirname(__FILE__)}/../../config/environment.rb"
-require "#{RAILS_ROOT}/bioprogs/ruby/phylip_file_parser.rb"
-require "#{RAILS_ROOT}/bioprogs/ruby/fasta_file_parser.rb"
-require "#{RAILS_ROOT}/app/models/raxml_partitionfile_parser.rb"
+require "#{Rails.root}/bioprogs/ruby/phylip_file_parser.rb"
+require "#{Rails.root}/bioprogs/ruby/fasta_file_parser.rb"
+require "#{Rails.root}/app/models/raxml_partitionfile_parser.rb"
 SERVER_NAME = ENV['SERVER_NAME']
 
 
@@ -34,7 +34,7 @@ SERVER_NAME = ENV['SERVER_NAME']
 class RaxmlAndSendEmail 
 
   def initialize(opts)
-    system "qstat -f > #{RAILS_ROOT}/tmp/files/qstat.log" #update the server capacity utilisation by startup
+    system "qstat -f > #{Rails.root}/tmp/files/qstat.log" #update the server capacity utilisation by startup
     @raxml_options = Hash.new
     @email_address = ""
     @queryfile = ""
@@ -46,7 +46,7 @@ class RaxmlAndSendEmail
     @id = ""
     @test_mapping = false
     options_parser!(opts)
-    @jobpath = "#{RAILS_ROOT}/public/jobs/#{@id}/"
+    @jobpath = "#{Rails.root}/public/jobs/#{@id}/"
     if @multi_gene_alignment
       if @use_clustering
         useUClust
@@ -70,7 +70,7 @@ class RaxmlAndSendEmail
     if @email_address  =~ /\A([^@\s])+@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i
       send_email
     end
-    system "qstat -f > #{RAILS_ROOT}/tmp/files/qstat.log" #update the server capacity utilisation after finishing
+    system "qstat -f > #{Rails.root}/tmp/files/qstat.log" #update the server capacity utilisation after finishing
     puts "finished submission!"
   end
 
@@ -144,7 +144,7 @@ class RaxmlAndSendEmail
     Dir.glob("#{@jobpath}RAxML_originalLabelledTree.#{@id}*"){|file|
       labeltree = file
       reftree = "#{@jobpath}tree_file"
-      command = "java -jar #{RAILS_ROOT}/bioprogs/java/treeMergeLengthsLabels.jar #{reftree} #{labeltree} > #{@jobpath}final_tree.tree"
+      command = "java -jar #{Rails.root}/bioprogs/java/treeMergeLengthsLabels.jar #{reftree} #{labeltree} > #{@jobpath}final_tree.tree"
       puts command
       system command
       @raxml_options["-t"] =  "#{@jobpath}final_tree.tree"
@@ -167,7 +167,7 @@ class RaxmlAndSendEmail
     read_gene_score = Hash.new
     query_sequences = FastaFileParser.new(@queryfile).seqs
     # split the multi gene file based on the partition file
-    command ="cd #{RAILS_ROOT}/public/jobs/#{@id}; #{RAILS_ROOT}/bioprogs/raxml/raxmlHPC-SSE3 -s #{alifile} -m GTRGAMMA -p 12345  -n #{id}_mga -fs -t #{treefile} -q #{partitionfile}"
+    command ="cd #{Rails.root}/public/jobs/#{@id}; #{Rails.root}/bioprogs/raxml/raxmlHPC-SSE3 -s #{alifile} -m GTRGAMMA -p 12345  -n #{id}_mga -fs -t #{treefile} -q #{partitionfile}"
     system command 
 
     # build fasta db file for each Gene and perform swps3
@@ -205,9 +205,9 @@ class RaxmlAndSendEmail
         query_seq.close
         swps3_out = "#{@jobpath}swps3.out"
         if genes_types[gene_no] =~/[Dd][Nn][Aa]/
-          command = "#{RAILS_ROOT}/bioprogs/swps3/swps3 -i -5 -e -2 #{RAILS_ROOT}/bioprogs/swps3/matrices/dna_matrix.mat #{query_seq.path} #{fasta_db_file.path} | sort -nr | head -n 1 > #{swps3_out} 2>&1" 
+          command = "#{Rails.root}/bioprogs/swps3/swps3 -i -5 -e -2 #{Rails.root}/bioprogs/swps3/matrices/dna_matrix.mat #{query_seq.path} #{fasta_db_file.path} | sort -nr | head -n 1 > #{swps3_out} 2>&1" 
         else
-          command = "#{RAILS_ROOT}/bioprogs/swps3/swps3 #{RAILS_ROOT}/bioprogs/swps3/matrices/blosum62.mat #{query_seq.path} #{fasta_db_file.path} | sort -nr | head -n 1 > #{swps3_out} 2>&1" 
+          command = "#{Rails.root}/bioprogs/swps3/swps3 #{Rails.root}/bioprogs/swps3/matrices/blosum62.mat #{query_seq.path} #{fasta_db_file.path} | sort -nr | head -n 1 > #{swps3_out} 2>&1" 
         end
         system command
         # collect query readX x GeneY maximum score
@@ -305,11 +305,11 @@ class RaxmlAndSendEmail
   
   def useUClust
     outfile = @jobpath+"cluster"
-    command = "#{RAILS_ROOT}/bioprogs/uclust/uclust32 --cluster #{@queryfile}  --uc #{outfile}.uc --id 0.90 --usersort --seedsout #{outfile}.fas 2>&1"
+    command = "#{Rails.root}/bioprogs/uclust/uclust32 --cluster #{@queryfile}  --uc #{outfile}.uc --id 0.90 --usersort --seedsout #{outfile}.fas 2>&1"
     puts command
     system command
     # Not necessary anymore in uclust version 4.2
-   # command = "#{RAILS_ROOT}/bioprogs/uclust/uclust32 --uc2fasta #{outfile}.uc --input #{@queryfile} --output #{outfile}.fas  2>&1"
+   # command = "#{Rails.root}/bioprogs/uclust/uclust32 --uc2fasta #{outfile}.uc --input #{@queryfile} --output #{outfile}.fas  2>&1"
    # puts command
    # system command
    # ref = Reformat.new(outfile+".fas")
@@ -335,7 +335,7 @@ class RaxmlAndSendEmail
   end
 
   def buildAlignmentWithPaPaRa
-    command = "cd #{RAILS_ROOT}/public/jobs/#{@id}; #{RAILS_ROOT}/bioprogs/papara_ts/raxmlHPC -f X -m GTRGAMMA -t #{@raxml_options['-t']} -s #{@raxml_options['-s']} -X #{@queryfile} -n papara "
+    command = "cd #{Rails.root}/public/jobs/#{@id}; #{Rails.root}/bioprogs/papara_ts/raxmlHPC -f X -m GTRGAMMA -t #{@raxml_options['-t']} -s #{@raxml_options['-s']} -X #{@queryfile} -n papara "
     puts command
     system command
     @raxml_options["-s"] = @jobpath+"RAxML_palign.papara"
@@ -343,12 +343,12 @@ class RaxmlAndSendEmail
 
   def runRAxML
     if @raxml_options["-T"].nil?
-      command ="cd #{RAILS_ROOT}/public/jobs/#{@id}; #{RAILS_ROOT}/bioprogs/raxml/raxmlHPC-SSE3 "
+      command ="cd #{Rails.root}/public/jobs/#{@id}; #{Rails.root}/bioprogs/raxml/raxmlHPC-SSE3 "
       @raxml_options.each_key  {|k| command = command + k + " " + @raxml_options[k] + " "}
       puts command
       system command
     else
-      command ="cd #{RAILS_ROOT}/public/jobs/#{@id}; #{RAILS_ROOT}/bioprogs/raxml_parallel/raxmlHPC-PTHREADS-SSE3 "
+      command ="cd #{Rails.root}/public/jobs/#{@id}; #{Rails.root}/bioprogs/raxml_parallel/raxmlHPC-PTHREADS-SSE3 "
       @raxml_options.each_key  {|k| command = command + k + " " + @raxml_options[k] + " "}
       puts command
       system command
@@ -357,7 +357,7 @@ class RaxmlAndSendEmail
 
   def convertTreefileToPhyloXML
     treefile =  @raxml_options["-t"]
-    command = "cd #{RAILS_ROOT}/bioprogs/java; java -jar convertToPhyloXML.jar #{treefile}"
+    command = "cd #{Rails.root}/bioprogs/java; java -jar convertToPhyloXML.jar #{treefile}"
     if @raxml_options["-x"].nil? # bootstrapping activated?
       file = @jobpath+"RAxML_classificationLikelihoodWeights."+@id
       command = "#{command} #{file}  > #{@jobpath}treefile.phyloxml"
@@ -372,7 +372,7 @@ class RaxmlAndSendEmail
     # make empty placement file for the phyloxml converter
     empty_file = "no_placements"
     command = "cd #{@jobpath}; touch #{empty_file}; "
-    command = command + "cd #{RAILS_ROOT}/bioprogs/java; java -jar convertToPhyloXML.jar #{treefile} #{@jobpath+empty_file} > #{@jobpath}treefile_no_placements.phyloxml; rm  #{@jobpath+empty_file}"
+    command = command + "cd #{Rails.root}/bioprogs/java; java -jar convertToPhyloXML.jar #{treefile} #{@jobpath+empty_file} > #{@jobpath}treefile_no_placements.phyloxml; rm  #{@jobpath+empty_file}"
     puts command
     system command
     
