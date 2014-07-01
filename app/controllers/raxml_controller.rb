@@ -1,21 +1,6 @@
 class RaxmlController < ApplicationController
-  def submit
-    @root  = "#{ENV['SERVER_ADDR']}"
-    @dna_model_options = ""
-    @aa_model_options = ""
-    @aa_matrices = ""
-    @par_model_options  =""
-    @model_options = ""
-    @heuristics =""
-    @heuristics_values =""
-    @ip_counter = 0;
-    @submission_counter = 0;
-    initialize_options
-    @raxml = Raxml.new
-  end
-
   def updateServerStatus
-     system "qstat -f > " + Rails.root.join( "tmp", "files", "qstat.log") #update the server capacity utilisation
+    system "qstat -f > " + Rails.root.join( "tmp", "files", "qstat.log") #update the server capacity utilisation
   end
 
   def submit_single_gene
@@ -88,11 +73,9 @@ class RaxmlController < ApplicationController
       end
     end
     getInfo
-    
   end
 
   def getInfo
-
     # Visitors, job Submission infos
     ips = Userinfo.find(:all)
     if ips.size == 0
@@ -385,6 +368,7 @@ class RaxmlController < ApplicationController
     end
 
   end
+
   def collectCites(jobid)
     @cites << "<b>EPA:</b> <li> S.A. Berger, A. Stamatakis, Evolutionary Placement of Short Sequence Reads. <a href=\"http://arxiv.org/abs/0911.2852v1\" target=\"_blank\">arXiv:0911.2852v1</a> [q-bio.GN](2009)</li>"
     @cites << "<b>Archaeopteryx Treeviewer:</b> <li>Han, Mira V.; Zmasek, Christian M. (2009). phyloXML: XML for evolutionary biology and comparative genomics. BMC Bioinformatics (United Kingdom: BioMed Central) 10: 356. doi:10.1186/1471-2105-10-356. <a href=\"http://www.biomedcentral.com/1471-2105/10/356\" target=\"_blank\">http://www.biomedcentral.com/1471-2105/10/356</a></li>"
@@ -395,7 +379,6 @@ class RaxmlController < ApplicationController
       @cites << "<b>Hmmer:</b> <li>S. R. Eddy., A New Generation of Homology Search Tools Based on Probabilistic Inference. Genome Inform., 23:205-211, 2009.</li>"
       @cites << "<b>uclust:</b> <li><a href=\"http://www.drive5.com/uclust\" target=\"_blank\">http://www.drive5.com/uclust</a></li>"
     end
-
   end
     
   def download 
@@ -516,36 +499,11 @@ class RaxmlController < ApplicationController
       end
     end
     redirect_to :action => "allJobs" , :email =>  "#{jobs_email}"
-
   end
 
   
   def contact
     getInfo
-    @error = ""
-    if !(params[:id].nil?)
-      @error = "An error occurres, please try again!"
-    end
-  end
-
-  def sendMessage
-    name = params[:con_name]
-    name = name.gsub(/\s/,"__")
-    email = params[:con_email]
-    subject = params[:con_subject]
-    subject = subject.gsub(/\s/,"__")
-    subject = subject.gsub(/\"/,"\\\"")
-    subject = subject.gsub(/\'/,"\\\\\'")
-    message = params[:con_message]
-    message = message.gsub(/\n/,"#n#")
-    message = message.gsub(/\s/,"__")
-    message = message.gsub(/\"/,"\\\"")
-    message = message.gsub(/\'/,"\\\\\'")
-    if Raxml.sendMessage(name,email,subject,message)
-      redirect_to :action => "confirmation"
-    else
-      redirect_to :action => "contact", :id=>1
-    end
   end
 
   def confirmation
@@ -555,6 +513,5 @@ class RaxmlController < ApplicationController
   def about
     getInfo
   end
-
  
 end

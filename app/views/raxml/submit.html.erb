@@ -1,9 +1,5 @@
 <h1>Submit job</h1>
 
-<%#= error_messages_for :raxml, :header_message => "There were #{@raxml.errors.size} errors in your input!" %>
-
-<% form_tag({:action => 'submitJob'},:multipart => true) do %>
-
 <!-- Single or multi gene files -->
 <div class="clearfix">
   <div id="modusButton">
@@ -14,8 +10,10 @@
     <div id="modusUnselected"><li><%= link_to "Multi Gene", :action => 'submit_multi_gene'%></li>
     </div>
   </div>
-
 </div>
+
+<%#= error_messages_for :raxml, :header_message => "There were #{@raxml.errors.size} errors in your input!" %>
+<%= form_tag 'submitJob', :multipart => true do %>
 
 <!-- upload alignmentfile -->
 <div class="clearfix" id="block">
@@ -120,10 +118,11 @@
   </div>
   
 </div>
+
 <!-- Select speed -->
 <div id="block">
   <p><label for = "speed">Fast</label>: 
-    <%= check_box('speed', 'speed', {:checked=>'checked'} ,checked_value="y", unchecked_value="v")%>
+    <%= check_box('speed', 'speed', {:checked=>'checked'}, checked_value="y", unchecked_value="v")%>
   </p>
 </div>
 
@@ -200,9 +199,9 @@
     </p>
     
   </div>
-  
-  <% end %>
 </div>
+<% end %>
+
 <div id="reset_tag">
   <% form_tag({:action => 'submit'},:multipart => true) do %>
   <%= submit_tag "Reset" %>

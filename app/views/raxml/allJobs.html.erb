@@ -1,4 +1,4 @@
-<% form_tag({:action => 'deleteOldJobs'},:multipart => true) do %>
+<%= form_tag 'deleteOldJobs', :multipart => true do %>
 <div style="display:none">
   <%= check_box("email", "email", {}, checked_value=@jobs_email, unchecked_value=@jobs_email)%>
 </div>

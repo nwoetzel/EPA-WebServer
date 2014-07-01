@@ -11,12 +11,14 @@
     <div id="modusUnselected"><li><%= link_to "Multi Gene", :action => 'submit_multi_gene'%></li>
     </div>
   </div>
-
 </div>
-<% form_tag({:action => 'submitJob'},:multipart => true) do %>
+
+<%= form_tag 'submitJob', :multipart => true do %>
+
 <div id="flag">
   <input type="text" name="modus" value="sga" />
 </div>
+
 <!-- upload alignmentfile -->
 <div class="clearfix" id="block">
   <div id="first_upload">
@@ -34,6 +36,7 @@
       </div>
     </p>
   </div>
+
   <!-- upload treefile -->
   <div id ="second_upload">
     <p><label for="tree_file">Select tree file</label> : 
@@ -51,6 +54,7 @@
     </p>
   </div>
 </div>
+
 <!-- upload optional query reads -->
 <div id="block">
   Upload unaligned query reads:   
@@ -134,15 +138,7 @@
       </p>
     </div>
   </div>
-  
 </div>
-<!-- Not used anymore: Select speed -->
-<!-- <div id="block">
-  <p><label for = "speed">Fast</label>: 
-    <input id="chSpeed" name="chSpeed" type="checkbox" value="T" checked ="checked" onclick="optionalCheckboxElementsSpeed('chSpeed','chSpeed', 'heuristic','chHeu')"/>
-  </p> 
-</div> -->
-
 
 <div id="block">
   <!-- Select Heuristics -->
@@ -205,9 +201,9 @@
     </p>
     
   </div>
-  
-  <% end %>
 </div>
+
+<% end %>
 <div id="reset_tag">
   <% form_tag({:action => 'submit_single_gene'},:multipart => true) do %>
   <%= submit_tag "Reset" %>

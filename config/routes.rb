@@ -64,9 +64,8 @@ EPAWebserver::Application.routes.draw do
   get   "/look"               => "raxml#look"
   get   "/contact"            => "raxml#contact"
   get   "/about"              => "raxml#about"
-  get   "/sendMessage"        => "raxml#sendMessage"
-  get   "/findJob"            => "raxml#findJob"
-  get   "/listOldJobs"        => "raxml#listOldJobs"
+  post  "/findJob"            => "raxml#findJob"
+  post  "/listOldJobs"        => "raxml#listOldJobs"
   post  "/submitJob"          => "raxml#submitJob"
     
   root :to => 'raxml#index'
