@@ -1,25 +1,34 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.18'
+gem 'rails', '4.1.2'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
-gem 'sqlite3'
+#gem 'json'
 
-gem 'json'
+group :development do
+#  gem 'rspec-rails', '2.6.1'
+end
+
+group :test do
+#  gem 'rspec-rails', '2.6.1'
+#  gem 'webrat', '0.7.1'
+end
 
 # Gems used only for assets and not required
 # in production environments by default.
-#group :assets do
+group :assets do
 #  gem 'sass-rails',   '~> 3.2.3'
 #  gem 'coffee-rails', '~> 3.2.1'
+#  gem 'execjs'      , '~> 2.2.1'
+#  gem 'therubyracer', '~> 0.12.1'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   # gem 'therubyracer', :platforms => :ruby
 
 #  gem 'uglifier', '>= 1.0.3'
-#end
+end
 
 # gem 'jquery-rails'
 
@@ -37,16 +46,20 @@ gem 'json'
 
 # To use debugger
 # gem 'ruby-debug'
-gem 'cgi_multipart_eof_fix', '2.5.0'
-gem 'daemons', '1.1.9'
-gem 'fastthread', '1.0.7'
-gem 'gem_plugin', '0.2.3'
-gem 'highline', '1.6.15'
-gem 'i18n', '0.6.9'
-gem 'mongrel', '1.1.5'
-gem 'mongrel_cluster', '1.0.5'
+#gem 'cgi_multipart_eof_fix', '2.5.0'
+#gem 'daemons', '1.1.9'
+#gem 'fastthread', '1.0.7'
+#gem 'gem_plugin', '0.2.3'
+#gem 'highline', '1.6.15'
+#gem 'i18n', '0.6.9'
+#gem 'mongrel', '1.1.5'
+#gem 'mongrel_cluster', '1.0.5'
+
+# database
 gem 'mysql', '2.9.0'
-gem 'open4', '1.3.0'
-gem 'Platform', '0.4.0'
+gem 'sqlite3'
+
+#gem 'open4', '1.3.0'
+#gem 'Platform', '0.4.0'
 gem 'popen4', '0.1.2'
-gem 'responders', '0.9.3'
+#gem 'responders', '0.9.3'

@@ -32,11 +32,11 @@ attr_reader :format, :valid_format, :error ,:data
   def checkTreefileFormatWithJava
     
     random_number = (1+rand(10000))* (1+(10000%(1+rand(10000))))*(1+rand(10000)) #build random number for @filename to avoid collision
-    file = Rails.root.join( "tmp", "files", "#{random_number}_#{@filename}") 
+    file = Rails.root.join( "tmp", "files", "#{random_number}_#{@filename}").to_s
     f = File.open(file,'wb')
     @data.each {|d| f.write(d)}
     f.close
-    cmd = "java -jar " + Rails.root.join( "bioprogs", "java", "treecheck.jar #{file}")
+    cmd = "java -jar " + Rails.root.join( "bioprogs", "java", "treecheck.jar #{file}").to_s
     # let RAxML check if phylip format is correct
     PTY.spawn(cmd) do |stdin, stdout, pid| 
       
