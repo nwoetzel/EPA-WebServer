@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.1.2'
+gem 'rails', '4.1.4'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -56,8 +56,8 @@ end
 #gem 'mongrel_cluster', '1.0.5'
 
 # database
-gem 'mysql', '2.9.0'
-gem 'sqlite3'
+gem 'mysql', '2.9.1'
+gem 'sqlite3', '1.3.9'
 
 #gem 'open4', '1.3.0'
 #gem 'Platform', '0.4.0'

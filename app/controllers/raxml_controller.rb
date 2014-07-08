@@ -34,42 +34,22 @@ class RaxmlController < ApplicationController
   end
 
   def initialize_options_mga
-    models = ["GAMMA","CAT", "CATI","GAMMAI"]
-    models.each {|m| @model_options= @model_options+"<option>#{m}</option>"}
-    matrices = ["DAYHOFF", "DCMUT", "JTT", "MTREV", "WAG", "RTREV", "CPREV", "VT", "BLOSUM62", "MTMAM", "LG"]
-    matrices.each {|m| @matrices= @matrices+"<option>#{m}</option>"}
-    heuristics = ["ML"]
-    heuristics.each {|h| @heuristics = @heuristics+"<option>#{h}</option>"}
-    heuristics_values = ["1/2","1/4","1/8","1/16","1/32","1/64"]
-    heuristics_values.each do |h| 
-      if h.eql?("1/16")
-         @heuristics_values = @heuristics_values+"<option selected=\"selected\">#{h}</option>"
-      else
-        @heuristics_values = @heuristics_values+"<option>#{h}</option>"
-      end
-    end
+    @model_options = ["GAMMA","CAT", "CATI","GAMMAI"]
+    @matrices = ["DAYHOFF", "DCMUT", "JTT", "MTREV", "WAG", "RTREV", "CPREV", "VT", "BLOSUM62", "MTMAM", "LG"]
+    @heuristics = ["ML"]
+    @heuristics_values = ["1/2","1/4","1/8","1/16","1/32","1/64"]
+#   ("1/16") select
     getInfo
   end
 
   def initialize_options
-    models = ["GTRGAMMA","GTRCAT", "GTRCATI","GTRGAMMAI"]
-    models.each {|m| @dna_model_options= @dna_model_options+"<option>#{m}</option>"}
-    models = ["PROTGAMMA","PROTGAMMAI","PROTCAT","PROTCATI"]
-    models.each {|m| @aa_model_options= @aa_model_options+"<option>#{m}</option>"}
-    matrices = ["DAYHOFF", "DCMUT", "JTT", "MTREV", "WAG", "RTREV", "CPREV", "VT", "BLOSUM62", "MTMAM", "LG"]
-    matrices.each {|m| @aa_matrices= @aa_matrices+"<option>#{m}</option>"}
-    models = ["GAMMA", "GAMMAI", "CAT", "CATI"]
-    models.each {|m| @par_model_options= @par_model_options+"<option>#{m}</option>"}
-    heuristics = ["ML"]
-    heuristics.each {|h| @heuristics = @heuristics+"<option>#{h}</option>"}
-    heuristics_values = ["1/2","1/4","1/8","1/16","1/32","1/64"]
-    heuristics_values.each do |h| 
-      if h.eql?("1/16")
-        @heuristics_values = @heuristics_values+"<option selected=\"selected\">#{h}</option>"
-      else
-        @heuristics_values = @heuristics_values+"<option>#{h}</option>"
-      end
-    end
+    @dna_model_options = ["GTRGAMMA","GTRCAT", "GTRCATI","GTRGAMMAI"]
+    @aa_model_options  = ["PROTGAMMA","PROTGAMMAI","PROTCAT","PROTCATI"]
+    @aa_matrices       = ["DAYHOFF", "DCMUT", "JTT", "MTREV", "WAG", "RTREV", "CPREV", "VT", "BLOSUM62", "MTMAM", "LG"]
+    @par_model_options = ["GAMMA", "GAMMAI", "CAT", "CATI"]
+    @heuristics = ["ML"]
+    @heuristics_values = ["1/2","1/4","1/8","1/16","1/32","1/64"]
+#   ("1/16") select
     getInfo
   end
 
@@ -111,7 +91,7 @@ class RaxmlController < ApplicationController
     @submission_counter = 0;
     initialize_options
     
-    @directory       = nil
+    @directory       = Rails.root.join( "public", "jobs", "#{@jobid}/").to_s
     @ip              = request.remote_ip
     @alifile         = params[:alifile]
     @treefile        = params[:treefile]
@@ -209,15 +189,16 @@ class RaxmlController < ApplicationController
     else
       @use_bootstrap = "F"
     end
-   
-    buildJobDir
-    @raxml = Raxml.new({ :alifile         => @alifile ,
+
+    puts "alifile"
+    puts @alifile 
+    @raxml = Raxml.new({ :alifile         => @alifile.original_filename ,
                          :query           => @query, 
                          :outfile         => @outfile, 
                          :speed           => @speed, 
                          :substmodel      => @substmodel, 
                          :heuristic       => @heuristic, 
-                         :treefile        => @treefile, 
+                         :treefile        => @treefile.original_filename, 
                          :email           => @email, 
                          :h_value         => @h_value, 
                          :errorfile       => "", 
@@ -225,9 +206,9 @@ class RaxmlController < ApplicationController
                          :use_bootstrap   => @use_bootstrap, 
                          :b_random_seed   => @b_random_seed, 
                          :b_runs          => @b_runs , 
-                         :parfile         => @parfile, 
+                         :parfile         => @parfile.original_filename, 
                          :use_queryfile   => @use_queryfile, 
-                         :queryfile       => @queryfile, 
+                         :queryfile       => @queryfile.original_filename, 
                          :use_clustering  => @use_clustering, 
                          :jobid           => @jobid, 
                          :user_ip         => @ip, 
@@ -235,8 +216,9 @@ class RaxmlController < ApplicationController
                          :status          => "running" , 
                          :mga             => @mga, 
                          :use_papara      => @use_papara})
-    
+    #puts @raxml.inspect
     if @raxml.save
+      buildJobDir
       @raxml.update_attribute(:outfile,"#{@raxml.jobid}")
       link = url_for :controller => 'raxml', :action => 'results', :id => @raxml.jobid 
       @raxml.execude(link,@raxml.jobid.to_s)
@@ -281,7 +263,6 @@ class RaxmlController < ApplicationController
   end
 
   def buildJobDir
-    @directory = Rails.root.join( "public", "jobs", "#{@jobid}/").to_s
     Dir.mkdir(@directory) rescue system("rm -r #{@directory}; mkdir #{@directory}")
   end
 
@@ -289,7 +270,7 @@ class RaxmlController < ApplicationController
     id = "#{rand(9)}#{rand(9)}#{rand(9)}#{rand(9)}#{rand(9)}#{rand(9)}#{rand(9)}#{rand(9)}#{rand(9)}"	
     searching_for_valid_id = true
     while searching_for_valid_id
-      r = Raxml.find(:first, :conditions => ["jobid = #{id}"])
+      r = Raxml.find_by jobid = "#{id}"
       if r.nil?
         return id
       end
