@@ -1,0 +1,4 @@
+log/*
+db/*sqlite3
+config/initializers/session_store.rb
+config/initializers/settings.rb
