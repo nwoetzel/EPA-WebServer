@@ -46,7 +46,7 @@ class Raxml < ActiveRecord::Base
 
   ## custom validator function that checks the file formats of the uploaded Alignemntfile , Treefile, Partitionfile and the Sequencefile with the unaligned reads.
   def validate
-    jobdir = Rails.root.join( "public", "jobs", "#{self.jobid}") + "/"
+    jobdir = Rails.root.join( "public", "jobs", "#{self.jobid}").to_s + "/"
     if (!(self.alifile.eql?("")) && !(self.treefile.eql?(""))) &&  (!(self.alifile.nil?) && !(self.treefile.nil?))
       a = RaxmlAlignmentfileParser.new(self.alifile, self.substmodel, self.parfile)
       errors.add(:alifile, a.error) if !(a.valid_format)
@@ -147,9 +147,9 @@ class Raxml < ActiveRecord::Base
     end
     
     # Build shell file  
-    path = Rails.root.join( "public", "jobs", "#{id}")
-    shell_file = Rails.root.join( "public", "jobs", "#{id}", "submit.sh")
-    command = Rails.root.join( "bioprogs", "ruby", "raxml_and_send_email.rb")
+    path = Rails.root.join( "public", "jobs", "#{id}").to_s
+    shell_file = Rails.root.join( "public", "jobs", "#{id}", "submit.sh").to_s
+    command = Rails.root.join( "bioprogs", "ruby", "raxml_and_send_email.rb").to_s
     opts.each_key {|k| command  = command+" "+k+" #{opts[k]} "}
     puts command
     File.open(shell_file,'wb'){|file| file.write(command+";echo done!")}
@@ -169,7 +169,7 @@ class Raxml < ActiveRecord::Base
 
   ## Sends the message entered via the contact formular on the webpage to the administrators (Alexi,Simon,Denis)
   def Raxml.sendMessage(name,email,subject,message)  
-    command = Rails.root.join( "bioprogs", "ruby", "send_message.rb ")
+    command = Rails.root.join( "bioprogs", "ruby", "send_message.rb ").to_s
     if !(name.nil? || name.eql?(""))
       command = command+" -n #{name} "
     end

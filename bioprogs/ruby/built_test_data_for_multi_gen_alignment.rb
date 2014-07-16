@@ -9,7 +9,7 @@ class BuiltTestDataForMultiGenAlignment
   def initialize(alifile, treefile, parfile,  seqs_for_test)
     @parfile = parfile
     @treefile = treefile
-    command = Rails.root.join( "bioprogs", "raxml", "raxmlHPC-SSE3") + " -s #{alifile} -m GTRGAMMA -p 12345 -n T1 -fs -t #{treefile} -q #{parfile}"
+    command = Rails.root.join( "bioprogs", "raxml", "raxmlHPC-SSE3").to_s + " -s #{alifile} -m GTRGAMMA -p 12345 -n T1 -fs -t #{treefile} -q #{parfile}"
     system command
     gene = nil
     read_pool = []

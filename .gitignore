@@ -13,3 +13,9 @@
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
+
+# ignore the bin directory
+/bin
+
+# ignore compiled assets
+public/assets/

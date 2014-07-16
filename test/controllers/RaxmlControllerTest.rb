@@ -16,3 +16,4 @@ class RaxmlControllerTest < ActionController::TestCase
     assert_response :success
   end
 end
+require 'test_helper'

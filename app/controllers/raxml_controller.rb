@@ -1,6 +1,8 @@
 class RaxmlController < ApplicationController
   def updateServerStatus
-    system "qstat -f > " + Rails.root.join( "tmp", "files", "qstat.log") #update the server capacity utilisation
+    command  = "qstat -f > ";
+    command += Rails.root.join( "tmp", "files", "qstat.log").to_s
+    system( command)  #update the server capacity utilisation
   end
 
   def submit_single_gene
@@ -32,52 +34,28 @@ class RaxmlController < ApplicationController
   end
 
   def initialize_options_mga
-    models = ["GAMMA","CAT", "CATI","GAMMAI"]
-    models.each {|m| @model_options= @model_options+"<option>#{m}</option>"}
-    matrices = ["DAYHOFF", "DCMUT", "JTT", "MTREV", "WAG", "RTREV", "CPREV", "VT", "BLOSUM62", "MTMAM", "LG"]
-    matrices.each {|m| @matrices= @matrices+"<option>#{m}</option>"}
-    heuristics = ["ML"]
-    heuristics.each {|h| @heuristics = @heuristics+"<option>#{h}</option>"}
-    heuristics_values = ["1/2","1/4","1/8","1/16","1/32","1/64"]
-    heuristics_values.each do |h| 
-      if h.eql?("1/16")
-         @heuristics_values = @heuristics_values+"<option selected=\"selected\">#{h}</option>"
-      else
-        @heuristics_values = @heuristics_values+"<option>#{h}</option>"
-      end
-    end
-    
+    @model_options = ["GAMMA","CAT", "CATI","GAMMAI"]
+    @matrices = ["DAYHOFF", "DCMUT", "JTT", "MTREV", "WAG", "RTREV", "CPREV", "VT", "BLOSUM62", "MTMAM", "LG"]
+    @heuristics = ["ML"]
+    @heuristics_values = ["1/2","1/4","1/8","1/16","1/32","1/64"]
+#   ("1/16") select
     getInfo
-    
   end
-  
-
 
   def initialize_options
-    models = ["GTRGAMMA","GTRCAT", "GTRCATI","GTRGAMMAI"]
-    models.each {|m| @dna_model_options= @dna_model_options+"<option>#{m}</option>"}
-    models = ["PROTGAMMA","PROTGAMMAI","PROTCAT","PROTCATI"]
-    models.each {|m| @aa_model_options= @aa_model_options+"<option>#{m}</option>"}
-    matrices = ["DAYHOFF", "DCMUT", "JTT", "MTREV", "WAG", "RTREV", "CPREV", "VT", "BLOSUM62", "MTMAM", "LG"]
-    matrices.each {|m| @aa_matrices= @aa_matrices+"<option>#{m}</option>"}
-    models = ["GAMMA", "GAMMAI", "CAT", "CATI"]
-    models.each {|m| @par_model_options= @par_model_options+"<option>#{m}</option>"}
-    heuristics = ["ML"]
-    heuristics.each {|h| @heuristics = @heuristics+"<option>#{h}</option>"}
-    heuristics_values = ["1/2","1/4","1/8","1/16","1/32","1/64"]
-    heuristics_values.each do |h| 
-      if h.eql?("1/16")
-        @heuristics_values = @heuristics_values+"<option selected=\"selected\">#{h}</option>"
-      else
-        @heuristics_values = @heuristics_values+"<option>#{h}</option>"
-      end
-    end
+    @dna_model_options = ["GTRGAMMA","GTRCAT", "GTRCATI","GTRGAMMAI"]
+    @aa_model_options  = ["PROTGAMMA","PROTGAMMAI","PROTCAT","PROTCATI"]
+    @aa_matrices       = ["DAYHOFF", "DCMUT", "JTT", "MTREV", "WAG", "RTREV", "CPREV", "VT", "BLOSUM62", "MTMAM", "LG"]
+    @par_model_options = ["GAMMA", "GAMMAI", "CAT", "CATI"]
+    @heuristics = ["ML"]
+    @heuristics_values = ["1/2","1/4","1/8","1/16","1/32","1/64"]
+#   ("1/16") select
     getInfo
   end
 
   def getInfo
     # Visitors, job Submission infos
-    ips = Userinfo.find(:all)
+    ips = Userinfo.all
     if ips.size == 0
       @ip_counter=0;
        @submission_counter = 0;
@@ -90,7 +68,7 @@ class RaxmlController < ApplicationController
     # Server capacity utilisation infos
     @slots = 0
     @used_slots = 0
-    q = QstatFileParser.new( Rails.root.join( "tmp", "files", "qstat.log"))
+    q = QstatFileParser.new( Rails.root.join( "tmp", "files", "qstat.log").to_s)
     @slots = q.slots
     @used_slots = q.used_slots
     # submitJob and results should always update the status file. 
@@ -113,7 +91,7 @@ class RaxmlController < ApplicationController
     @submission_counter = 0;
     initialize_options
     
-    @direcrory       = nil
+    @directory       = Rails.root.join( "public", "jobs", "#{@jobid}/").to_s
     @ip              = request.remote_ip
     @alifile         = params[:alifile]
     @treefile        = params[:treefile]
@@ -211,15 +189,16 @@ class RaxmlController < ApplicationController
     else
       @use_bootstrap = "F"
     end
-   
-     buildJobDir
-    @raxml = Raxml.new({ :alifile         => @alifile ,
+
+    puts "alifile"
+    puts @alifile 
+    @raxml = Raxml.new({ :alifile         => @alifile.original_filename ,
                          :query           => @query, 
                          :outfile         => @outfile, 
                          :speed           => @speed, 
                          :substmodel      => @substmodel, 
                          :heuristic       => @heuristic, 
-                         :treefile        => @treefile, 
+                         :treefile        => @treefile.original_filename, 
                          :email           => @email, 
                          :h_value         => @h_value, 
                          :errorfile       => "", 
@@ -227,9 +206,9 @@ class RaxmlController < ApplicationController
                          :use_bootstrap   => @use_bootstrap, 
                          :b_random_seed   => @b_random_seed, 
                          :b_runs          => @b_runs , 
-                         :parfile         => @parfile, 
+                         :parfile         => @parfile.original_filename, 
                          :use_queryfile   => @use_queryfile, 
-                         :queryfile       => @queryfile, 
+                         :queryfile       => @queryfile.original_filename, 
                          :use_clustering  => @use_clustering, 
                          :jobid           => @jobid, 
                          :user_ip         => @ip, 
@@ -237,8 +216,9 @@ class RaxmlController < ApplicationController
                          :status          => "running" , 
                          :mga             => @mga, 
                          :use_papara      => @use_papara})
-    
+    #puts @raxml.inspect
     if @raxml.save
+      buildJobDir
       @raxml.update_attribute(:outfile,"#{@raxml.jobid}")
       link = url_for :controller => 'raxml', :action => 'results', :id => @raxml.jobid 
       @raxml.execude(link,@raxml.jobid.to_s)
@@ -283,7 +263,6 @@ class RaxmlController < ApplicationController
   end
 
   def buildJobDir
-    @directory = Rails.root.join( "public", "jobs", "#{@jobid}/")
     Dir.mkdir(@directory) rescue system("rm -r #{@directory}; mkdir #{@directory}")
   end
 
@@ -291,7 +270,7 @@ class RaxmlController < ApplicationController
     id = "#{rand(9)}#{rand(9)}#{rand(9)}#{rand(9)}#{rand(9)}#{rand(9)}#{rand(9)}#{rand(9)}#{rand(9)}"	
     searching_for_valid_id = true
     while searching_for_valid_id
-      r = Raxml.find(:first, :conditions => ["jobid = #{id}"])
+      r = Raxml.find_by jobid = "#{id}"
       if r.nil?
         return id
       end
@@ -316,7 +295,7 @@ class RaxmlController < ApplicationController
 
   def jobIsFinished?(id)
     @raxml = Raxml.find(:first, :conditions => ["jobid = #{id}"]) 
-    path = Rails.root.join( "public", "jobs", "#{id}/")
+    path = Rails.root.join( "public", "jobs", "#{id}/").to_s
     finished = false
     Dir.glob(path+"submit.sh.*"){|file|
       f = File.open(file,'r')
@@ -352,7 +331,7 @@ class RaxmlController < ApplicationController
     @ip_counter = 0;
     @submission_counter = 0;
     @phyloxml_file ="treefile.phyloxml"
-    if File.size( Rails.root.join( "public", "jobs", jobid, @phyloxml_file)) > 5000000
+    if File.size( Rails.root.join( "public", "jobs", jobid, @phyloxml_file).to_s) > 5000000
       @phyloxml_file = "treefile_no_placements.phyloxml"
     end
     getInfo
@@ -366,18 +345,17 @@ class RaxmlController < ApplicationController
       @files << rax.errorfile
       @names << "logfile"
     end
-
   end
 
   def collectCites(jobid)
-    @cites << "<b>EPA:</b> <li> S.A. Berger, A. Stamatakis, Evolutionary Placement of Short Sequence Reads. <a href=\"http://arxiv.org/abs/0911.2852v1\" target=\"_blank\">arXiv:0911.2852v1</a> [q-bio.GN](2009)</li>"
-    @cites << "<b>Archaeopteryx Treeviewer:</b> <li>Han, Mira V.; Zmasek, Christian M. (2009). phyloXML: XML for evolutionary biology and comparative genomics. BMC Bioinformatics (United Kingdom: BioMed Central) 10: 356. doi:10.1186/1471-2105-10-356. <a href=\"http://www.biomedcentral.com/1471-2105/10/356\" target=\"_blank\">http://www.biomedcentral.com/1471-2105/10/356</a></li>"
-    @cites << "<li>Zmasek, Christian M.; Eddy, Sean R. (2001). ATV: display and manipulation of annotated phylogenetic trees. Bioinformatics (United Kingdom: Oxford Journals) 17 (4): 383–384. <a href=\"http://bioinformatics.oxfordjournals.org/cgi/reprint/17/4/383\" target=\"_blank\">http://bioinformatics.oxfordjournals.org/cgi/reprint/17/4/383</a></li>"
-    @cites << "<b>EDPL:</b><li>Frederick A Matsen, Robin B Kodner and E Virginia Armbrust, pplacer: linear time maximum-likelihood and Bayesian phylogenetic placement of sequences onto a fixed reference tree. <a href=\"http://arxiv.org/abs/1003.5943v1\" target=\"_blank\">arXiv:1003.5943v1</a>  [q-bio.PE]</li>"
+    @cites.push( '<b>EPA:</b> <li> S.A. Berger, A. Stamatakis, Evolutionary Placement of Short Sequence Reads. <a href="http://arxiv.org/abs/0911.2852v1" target="_blank">arXiv:0911.2852v1</a> [q-bio.GN](2009)</li>')
+    @cites.push( '<b>Archaeopteryx Treeviewer:</b> <li>Han, Mira V.; Zmasek, Christian M. (2009). phyloXML: XML for evolutionary biology and comparative genomics. BMC Bioinformatics (United Kingdom: BioMed Central) 10: 356. doi:10.1186/1471-2105-10-356. <a href="http://www.biomedcentral.com/1471-2105/10/356" target="_blank">http://www.biomedcentral.com/1471-2105/10/356</a></li>')
+    @cites.push( '<li>Zmasek, Christian M.; Eddy, Sean R. (2001). ATV: display and manipulation of annotated phylogenetic trees. Bioinformatics (United Kingdom: Oxford Journals) 17 (4): 383-384. <a href="http://bioinformatics.oxfordjournals.org/cgi/reprint/17/4/383" target="_blank">http://bioinformatics.oxfordjournals.org/cgi/reprint/17/4/383</a></li>')
+    @cites.push( '<b>EDPL:</b><li>Frederick A Matsen, Robin B Kodner and E Virginia Armbrust, pplacer: linear time maximum-likelihood and Bayesian phylogenetic placement of sequences onto a fixed reference tree. <a href="http://arxiv.org/abs/1003.5943v1" target="_blank">arXiv:1003.5943v1</a>  [q-bio.PE]</li>')
     rax =  Raxml.findWithException(:first, :conditions => ["jobid = #{jobid}"])
     if rax.use_clustering.eql?("T") 
-      @cites << "<b>Hmmer:</b> <li>S. R. Eddy., A New Generation of Homology Search Tools Based on Probabilistic Inference. Genome Inform., 23:205-211, 2009.</li>"
-      @cites << "<b>uclust:</b> <li><a href=\"http://www.drive5.com/uclust\" target=\"_blank\">http://www.drive5.com/uclust</a></li>"
+      @cites.push( '<b>Hmmer:</b> <li>S. R. Eddy., A New Generation of Homology Search Tools Based on Probabilistic Inference. Genome Inform., 23:205-211, 2009.</li>')
+      @cites.push( '<b>uclust:</b> <li><a href="http://www.drive5.com/uclust" target="_blank">http://www.drive5.com/uclust</a></li>')
     end
   end
     
@@ -493,7 +471,7 @@ class RaxmlController < ApplicationController
           jobid = value
           rax = Raxml.find(:first,:conditions => ["jobid = #{jobid}"])
           Raxml.destroy(rax.id)
-          command = "rm -r " + Rails.root.join( "public", "jobs", "#{jobid}")
+          command = "rm -r " + Rails.root.join( "public", "jobs", "#{jobid}").to_s
           system command
         end
       end
@@ -513,5 +491,4 @@ class RaxmlController < ApplicationController
   def about
     getInfo
   end
- 
 end
