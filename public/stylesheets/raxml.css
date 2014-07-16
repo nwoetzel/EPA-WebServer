@@ -141,7 +141,7 @@ a:hover{
 }
 #header_inner {
       height:50px;
-    background-image: url(/images/header.png);
+    background-image: url(../images/header.png);
 }
 
 #jobs td{  
@@ -168,11 +168,11 @@ a:hover{
     margin-right:auto;
     text-align:left;
     background-color:#ffffff;
-   /* background: url(/images/middle_background1.png) repeat-y;*/
+   /* background: url(../images/middle_background1.png) repeat-y;*/
 }
 
 #middle_wrapper{
-    background: url(/images/middle_background1.png) repeat-y;
+    background: url(../images/middle_background1.png) repeat-y;
 }
 
 #modusButton{

@@ -16,9 +16,10 @@ Rails::Initializer.run do |config|
 
   # Specify gems that this application depends on. 
   # They can then be installed with "rake gems:install" on new installations.
-  config.gem "rake" , :version => '10.3.2'
-  config.gem "rdoc" , :version => '4.1.1'
-  config.gem "mysql", :version => '2.9.1'
+  config.gem "rake" ,  :version => '10.3.2'
+  config.gem "rdoc" ,  :version => '4.1.1'
+  config.gem "mysql",  :version => '2.9.1'
+  config.gem "popen4", :version => '0.1.2'
   # config.gem "bj"
   # config.gem "hpricot", :version => '0.6', :source => "http://code.whytheluckystiff.net"
   # config.gem "aws-s3", :lib => "aws/s3"
