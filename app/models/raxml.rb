@@ -73,7 +73,7 @@ class Raxml < ActiveRecord::Base
           self.parfile = parfile_path
         end
       end
-      if ((self.use_queryfile.eql?("T") && !(self.queryfile.eql?(""))) || self.mga.eql?("T")) && ((self.use_queryfile.nil? && !(self.queryfile.nil?)) || self.mga.eql?("T"))
+     if ((self.use_queryfile.eql?("T") && !(self.queryfile.eql?(""))) || self.mga.eql?("T")) && ((!(self.use_queryfile.nil?) && !(self.queryfile.nil?)) || self.mga.eql?("T"))
         q = RaxmlQueryfileParser.new(self.queryfile)
         errors.add(:queryfile, q.error) if !(q.valid_format) 
         if q.valid_format

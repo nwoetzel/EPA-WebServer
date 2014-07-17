@@ -179,7 +179,7 @@ attr_reader :format, :valid_format, :error ,:data , :ali_length, :log, :het_mode
     puts @partition_file
     puts "#############"
 
-    cmd = "#{RAILS_ROOT}/bioprogs/raxml/raxmlHPC-SSE3  -s #{file} -fc -m  #{@het_model} -n #{random_number}"
+    cmd = "#{RAILS_ROOT}/bioprogs/raxml/raxmlHPC-SSE3  -s #{file} -f c -m  #{@het_model} -n #{random_number} -w #{RAILS_ROOT}/raxml_log"
     if !(@partition_file.nil? || @partition_file.eql?(""))
       cmd = cmd + "-q #{@partition_file}"
     end

@@ -319,14 +319,14 @@ class RaxmlAndSendEmail
   end
 
   def buildAlignmentWithHMMER
-    #puts (@raxml_options["-s"])
+    puts (@raxml_options["-s"])
     ref = Reformat.new(@raxml_options["-s"])
     ref.reformatToStockholm
     ref.writeToFile(@jobpath+"alignment_file.sto")
-    command = "hmmbuild --dna  #{@jobpath}alignment_file.hmm #{@jobpath}alignment_file.sto "
+    command = "#{RAILS_ROOT}/bioprogs/hmmer/src/hmmbuild --dna  #{@jobpath}alignment_file.hmm #{@jobpath}alignment_file.sto "
     puts command
     system command
-    command = "hmmalign -o #{@jobpath}alignment_file2.sto --mapali #{@jobpath}alignment_file.sto  #{@jobpath}alignment_file.hmm #{@queryfile}  "
+    command = "#{RAILS_ROOT}/bioprogs/hmmer/src/hmmalign -o #{@jobpath}alignment_file2.sto --mapali #{@jobpath}alignment_file.sto  #{@jobpath}alignment_file.hmm #{@queryfile}  "
     puts command
     system command
     ref = Reformat.new("#{@jobpath}alignment_file2.sto")

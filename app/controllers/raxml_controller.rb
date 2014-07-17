@@ -115,9 +115,9 @@ class RaxmlController < ApplicationController
 
   def submitJob
     @jobid = generateJobID
-    if !(params[:jobid].nil?)  ## quick hack such that the testing only generates Jobs with the ID 110.
-      @jobid  = "110"          #
-    end                        #
+   # if !(params[:jobid].nil?)  ## quick hack such that the testing only generates Jobs with the ID 110.
+   #   @jobid  = "110"          #
+   # end                        #
     @dna_model_options  = ""
     @aa_model_options   = ""
     @aa_matrices        = ""
