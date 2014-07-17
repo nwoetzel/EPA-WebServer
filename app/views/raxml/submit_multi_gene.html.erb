@@ -21,7 +21,7 @@
 <div class="clearfix" id="block">
   <div id="first_upload">
     <p><label for="raxml_alifile">Select alignment file</label> :   
-      <img src="/images/helpbutton.jpg" width="15" height="15" onmouseover="showTooltip('help_alifile',event)" onmouseout="hideTooltip('help_alifile')"/>
+      <%= image_tag("helpbutton.jpg", :size => "15x15", :alt => "", :onmouseover => "showTooltip('help_alifile',event)", :onmouseout => "hideTooltip('help_alifile')") %>
       <div id="upload">
         <input type="file" id="alifile" name="alifile" />
        <!--  <%= file_field 'raxml', 'alifile' %> -->
@@ -37,7 +37,7 @@
   <!-- upload treefile -->
   <div id ="first_upload">
     <p><label for="tree_file">Select tree file</label> : 
-      <img src="/images/helpbutton.jpg" width="15" height="15" onmouseover="showTooltip('help_treefile',event)" onmouseout="hideTooltip('help_treefile')"/>
+      <%= image_tag("helpbutton.jpg", :size => "15x15", :alt => "", :onmouseover => "showTooltip('help_treefile',event)", :onmouseout => "hideTooltip('help_treefile')") %>
       <div id="upload">
         <input type="file" id="treefile" name="treefile" />
         <!-- <%= file_field 'treefile', 'file' %> -->
@@ -52,7 +52,7 @@
   </div>
   <div id="first_upload">
     <p><label for="par_file">Select multi gene partition file</label> : 
-      <img src="/images/helpbutton.jpg" width="15" height="15" onmouseover="showTooltip('help_parfile',event)" onmouseout="hideTooltip('help_parfile')"/>
+      <%= image_tag("helpbutton.jpg", :size => "15x15", :alt => "", :onmouseover => "showTooltip('help_parfile',event)", :onmouseout => "hideTooltip('help_parfile')") %>
       <div id="upload">
         <input type="file" id="parfile" name="parfile" />
         <!-- <%= file_field 'raxml', 'parfile' %> -->
@@ -67,7 +67,7 @@
   </div>
   <!-- upload query reads file -->
   <div id ="second_upload">    <p><label for="query_file">Select query reads file</label> :  
-      <img src="/images/helpbutton.jpg" width="15" height="15" onmouseover="showTooltip('help_queryfile',event)" onmouseout="hideTooltip('help_queryfile')"/>
+      <%= image_tag("helpbutton.jpg", :size => "15x15", :alt => "", :onmouseover => "showTooltip('help_queryfile',event)", :onmouseout => "hideTooltip('help_queryfile')") %>
       <div id="upload">
         <input type="file" id="queryfile" name="queryfile" />
         <!-- <%= file_field 'raxml', 'queryfile' %> -->
@@ -78,7 +78,9 @@
         </div>
         Description here.
       </div>  
-      <div >Cluster reads <%= check_box_tag "cluster", "T"%><img src="/images/helpbutton.jpg" width="15" height="15" onmouseover="showTooltip('help_cluster',event)" onmouseout="hideTooltip('help_cluster')"/></div>
+      <div >Cluster reads <%= check_box_tag "cluster", "T"%>
+          <%= image_tag("helpbutton.jpg", :size => "15x15", :alt => "", :onmouseover => "showTooltip('help_cluster',event)", :onmouseout => "hideTooltip('help_cluster')") %>
+      </div>
       <div class="help" id="help_cluster" style="visibility:hidden" >
         <div id="help_header">
           Clustering:
@@ -113,7 +115,7 @@
 <div id="block">
   <!-- Select Heuristics -->
   Use Heuristics <input id="chHeu" name="chHeu" type="checkbox" value="T" onclick="optionalCheckboxElementsHeuristics('chSpeed','chSpeed', 'heuristic','chHeu')" />
-  <img src="/images/helpbutton.jpg" width="15" height="15" onmouseover="showTooltip('help_heuristics',event)" onmouseout="hideTooltip('help_heuristics')" />
+  <%= image_tag("helpbutton.jpg", :size => "15x15", :alt => "", :onmouseover => "showTooltip('help_heuristics',event)", :onmouseout => "hideTooltip('help_heuristics')") %>
   <div class="help" id="help_heuristics" style="visibility:hidden" >
     <div id="help_header">
       Heuristics:
@@ -139,7 +141,7 @@
 </div>
 <div id="block">
   <p><label for="job_desc">Job Description(optional):</label>
-    <img src="/images/helpbutton.jpg" width="15" height="15" onmouseover="showTooltip('help_job_description',event)" onmouseout="hideTooltip('help_job_description')"/>
+    <%= image_tag("helpbutton.jpg", :size => "15x15", :alt => "", :onmouseover => "showTooltip('help_job_description',event)", :onmouseout => "hideTooltip('help_job_description')") %>
     <div class="help" id="help_job_description" style="visibility:hidden" >
       <div id="help_header">
         Job Description:
@@ -160,7 +162,7 @@
     <!-- Email address field -->
     <p><label for="raxml_email">Email for notification(optional)</label> : 
       <%= text_field_tag "rax_email",nil,  :size =>40 %> 
-      <img src="/images/helpbutton.jpg" width="15" height="15" onmouseover="showTooltip('help_email',event)" onmouseout="hideTooltip('help_email')"/>
+      <%= image_tag("helpbutton.jpg", :size => "15x15", :alt => "", :onmouseover => "showTooltip('help_email',event)", :onmouseout => "hideTooltip('help_email')") %>
       <div class="help" id="help_email" style="visibility:hidden" >
         <div id="help_header">
           Your email address:
@@ -179,6 +181,3 @@
   <%= submit_tag "Reset" %>
   <% end%>
 </div>
-
-
-
