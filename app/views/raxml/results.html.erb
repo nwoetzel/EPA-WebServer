@@ -4,11 +4,10 @@
   <h2>Downloads</h2>
   <div id="download">
     <% i = 0; while i<@names.size %>
-       <li><%= link_to "#{@names[i]}", :action => 'download' , :file => "#{@files[i]}"%></li>
+       <li><%= link_to "#{@names[i]}", :action => "download" , :jobid => "#{@jobid}", :filename => "#{@filenames[i]}"%></li>
     <% i = i+1; end %>
     <h3>Software</h3>
-    <li><%= link_to "Treeviewer", :action => 'download' , :file => "#{RAILS_ROOT}/public/data/treeviewer.zip"%></li>
-
+    <li><%= link_to "Treeviewer", :controller => "data", :action => "treeviewer.zip"%>
   </div>
   <p>Pleace cite: 
     <ul>
@@ -18,11 +17,13 @@
   </ul></p>
   
   <p><%= button_to "Submit new job" , :controller => 'raxml', :action => 'submit' %></p>
-  <p><a href="/raxml/treehelp" onclick="window.open(this.href, '_blank', 'toolbar=no,location=no,directories=no,resizable=yes,scrollbars=yes, width=800, height=600'); return false;">Show Treeviewer Help</a></p>
   <p>
-  <APPLET codebase="/applets/archaeopteryx" archive="archaeopteryx_applets.jar" code="org.forester.archaeopteryx.ArchaeopteryxE" width="1000" height="700">
-    <param name="url_of_tree_to_load" value= '<%="#{@root}#{@path}#{@phyloxml_file}"%>' >
-    <param name="config_file" value='<%="#{@root}/applets/archaeopteryx/_aptx_configuration_file"%>'>
+    <%= link_to "Show Treeviewer Help", { :action => 'treehelp' }, :popup => [ '_blank', "toolbar=no, location=no, directories=no, resizable=yes, scrollbars=yes, width=800, height=600" ] %>
+  <p>
+  
+  <APPLET codebase="<%=url_for( :controller => "applets", :action => "archaeopteryx")%>" archive="archaeopteryx_applets.jar" code="org.forester.archaeopteryx.ArchaeopteryxE" width="1000" height="700">
+    <param name="url_of_tree_to_load" value='<%=url_for( :controller => "jobs", :action => @jobid, :id => @phyloxml_file, :only_path => false)%>' >
+    <param name="config_file" value='<%=url_for( :controller => "applets", :action => "archaeopteryx", :id => "_aptx_configuration_file", :only_path => false)%>'>
   </APPLET>
 </p>
 </div>

@@ -155,7 +155,7 @@ class Raxml < ActiveRecord::Base
     File.open(shell_file,'wb'){|file| file.write(command+";echo done!")}
 
     # submit shellfile into batch system 
-    system "qsub -o #{path} -j y #{shell_file} "
+    system "qsub -o #{path} -j #{shell_file} "
   end
 
   ## checks email format
