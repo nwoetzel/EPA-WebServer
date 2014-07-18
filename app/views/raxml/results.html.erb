@@ -1,29 +1,34 @@
 <h1>Results</h1>
- <script type="text/javascript">noPlacementsHint("<%= @phyloxml_file %>")</script>
+<script type="text/javascript">noPlacementsHint("<%= @phyloxml_file %>")</script>
+
 <div id="block">
   <h2>Downloads</h2>
   <div id="download">
+    <h3>Result files</h3>
     <% i = 0; while i<@names.size %>
        <li><%= link_to "#{@names[i]}", :action => "download" , :jobid => "#{@jobid}", :filename => "#{@filenames[i]}"%></li>
     <% i = i+1; end %>
     <h3>Software</h3>
     <li><%= link_to "Treeviewer", :controller => "data", :action => "treeviewer.zip"%>
   </div>
-  <p>Pleace cite: 
-    <ul>
-      <% @cites.each do |cite| %>
-       <%= cite %>
-      <% end %> 
-  </ul></p>
+  <h2>Please cite</h2> 
+  <ul>
+    <% @cites.each do |cite| %>
+      <%= cite %>
+    <% end %> 
+  </ul>
   
-  <p><%= button_to "Submit new job" , :controller => 'raxml', :action => 'submit' %></p>
+  <p>
+    <%= button_to "Submit new job" , :controller => 'raxml', :action => 'submit' %>
+  </p>
   <p>
     <%= link_to "Show Treeviewer Help", { :action => 'treehelp' }, :popup => [ '_blank', "toolbar=no, location=no, directories=no, resizable=yes, scrollbars=yes, width=800, height=600" ] %>
+  </p>
+
   <p>
-  
-  <APPLET codebase="<%=url_for( :controller => "applets", :action => "archaeopteryx")%>" archive="archaeopteryx_applets.jar" code="org.forester.archaeopteryx.ArchaeopteryxE" width="1000" height="700">
-    <param name="url_of_tree_to_load" value='<%=url_for( :controller => "jobs", :action => @jobid, :id => @phyloxml_file, :only_path => false)%>' >
-    <param name="config_file" value='<%=url_for( :controller => "applets", :action => "archaeopteryx", :id => "_aptx_configuration_file", :only_path => false)%>'>
-  </APPLET>
-</p>
+    <APPLET codebase="<%=url_for( :controller => "applets", :action => "archaeopteryx")%>" archive="archaeopteryx_applets.jar" code="org.forester.archaeopteryx.ArchaeopteryxE" width="1000" height="700">
+      <param name="url_of_tree_to_load" value='<%=url_for( :controller => "jobs", :action => @jobid, :id => @phyloxml_file, :only_path => false)%>' >
+      <param name="config_file" value='<%=url_for( :controller => "applets", :action => "archaeopteryx", :id => "_aptx_configuration_file", :only_path => false)%>'>
+    </APPLET>
+  </p>
 </div>
