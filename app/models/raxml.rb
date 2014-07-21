@@ -3,7 +3,7 @@ require 'raxml_treefile_parser'
 require 'raxml_partitionfile_parser'
 require 'raxml_queryfile_parser'
 
-#### The main RAxML Objekt that contains the main Job submission informations and validates the input files and parameters
+#### The main RAxML Object that contains the main Job submission informations and validates the input files and parameters
 
 class Raxml < ActiveRecord::Base
 
@@ -26,7 +26,7 @@ class Raxml < ActiveRecord::Base
     end
   end
 
-  ## checks if the "Upload ualigned query reads" otption has been checked 
+  ## checks if the "Upload unaligned query reads" option has been checked 
   def queryfile_selected?
     if self.use_queryfile.eql?("T")
       return true
@@ -44,7 +44,7 @@ class Raxml < ActiveRecord::Base
     end
   end
 
-  ## custom validator function that checks the file formats of the uploaded Alignemntfile , Treefile, Partitionfile and the Sequencefile with the unaligned reads.
+  ## custom validator function that checks the file formats of the uploaded Alignmentfile , Treefile, Partitionfile and the Sequencefile with the unaligned reads.
   def validate
     jobdir = "#{RAILS_ROOT}/public/jobs/#{self.jobid}/"
     if (!(self.alifile.eql?("")) && !(self.treefile.eql?(""))) &&  (!(self.alifile.nil?) && !(self.treefile.nil?))
@@ -145,16 +145,30 @@ class Raxml < ActiveRecord::Base
       opts["-T"] = cores
     end
     
-    # Build shell file  
+    # Build shell file
     path = "#{RAILS_ROOT}/public/jobs/#{id}"
     shell_file = "#{RAILS_ROOT}/public/jobs/#{id}/submit.sh"
     command = "#{RAILS_ROOT}/bioprogs/ruby/raxml_and_send_email.rb"
-    opts.each_key {|k| command  = command+" "+k+" #{opts[k]} "}
+    opts.each_key {|k| command  = command + " " + k + " #{opts[k]} "}
     Rails.logger.info( "command " + command)
-    File.open(shell_file,'wb'){|file| file.write(command+";echo done!")}
+    
+    # create a log file which can be parsed for "done!" indicating that the job has finished 
+    current_logfile = File.join(path,"current.log")
+    if File.exists?(current_logfile) 
+      system "rm #{current_logfile}"
+    end
 
-    # submit shellfile into batch system 
-    submit_command = "qsub -o #{path} -j #{shell_file} "
+    # write command to submit script
+    File.open(shell_file,'wb'){|file|
+      file.write(command +"\n")
+      file.write("echo done! > #{current_logfile}\n")
+    }
+
+    # submit shellfile into batch system
+    log_out = File.join(path,"submit.sh.out")
+    log_err = File.join(path,"submit.sh.err")
+ 
+    submit_command = "qsub -o #{log_out} -e #{log_err} #{shell_file} "
     Rails.logger.info( "submit job using: " + submit_command)
     system submit_command
   end

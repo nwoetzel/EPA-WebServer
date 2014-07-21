@@ -167,9 +167,8 @@ attr_reader :format, :valid_format, :error ,:data , :ali_length, :log, :het_mode
 
   private
   def checkPhylipFormatWithRaxml
-    
     random_number = (1+rand(10000))* (1+(10000%(1+rand(10000))))*(1+rand(10000)) #build random number for @filename to avoid collision
-    file = "#{RAILS_ROOT}/tmp/files/#{random_number}_#{@filename}" 
+    file = File.join( RAILS_ROOT, "tmp", "files", "#{random_number}_#{@filename}") 
     f = File.open(file,'wb')
     @data.each {|d| f.write(d)}
     f.close
@@ -197,7 +196,7 @@ attr_reader :format, :valid_format, :error ,:data , :ali_length, :log, :het_mode
     if !@error.eql?("")
       @error = "#{@message}\n#{@error}"
     end
-     system "rm #{file}"
+    system "rm #{file}"
   end
 end
 

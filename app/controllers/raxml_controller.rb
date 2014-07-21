@@ -1,6 +1,6 @@
 class RaxmlController < ApplicationController
   def updateServerStatus
-     system "qstat -f > #{RAILS_ROOT}/tmp/files/qstat.log" #update the server capacity utilisation
+     system "qstat -f > " + File.join( RAILS_ROOT, "tmp", "files", "qstat.log") #update the server capacity utilisation
   end
 
   def submit_single_gene
@@ -89,7 +89,7 @@ class RaxmlController < ApplicationController
     # Server capacity utilisation infos
     @slots = 0
     @used_slots = 0
-    q = QstatFileParser.new(RAILS_ROOT+"/tmp/files/qstat.log")
+    q = QstatFileParser.new( File.join( RAILS_ROOT, "tmp", "files", "qstat.log"))
     @slots = q.slots
     @used_slots = q.used_slots
     # submitJob and results should always update the status file. 
@@ -282,7 +282,7 @@ class RaxmlController < ApplicationController
   end
 
   def buildJobDir
-    @directory = "#{RAILS_ROOT}/public/jobs/#{@jobid}/"
+    @directory = File.join( RAILS_ROOT, "public", "jobs", @jobid)
     Dir.mkdir(@directory) rescue system("rm -r #{@directory}; mkdir #{@directory}")
   end
 
@@ -315,9 +315,9 @@ class RaxmlController < ApplicationController
 
   def jobIsFinished?(id)
     @raxml = Raxml.find(:first, :conditions => ["jobid = #{id}"]) 
-    path = "#{RAILS_ROOT}/public/jobs/#{id}/"
+    path = File.join( RAILS_ROOT, "public", "jobs", id)
     finished = false
-    Dir.glob(path+"submit.sh.*"){|file|
+    Dir.glob(path+"current.log"){|file|
       f = File.open(file,'r')
       fi = f.readlines
       if fi.size > 0
@@ -351,7 +351,8 @@ class RaxmlController < ApplicationController
     @ip_counter = 0;
     @submission_counter = 0;
     @phyloxml_file ="treefile.phyloxml"
-    if File.size(RAILS_ROOT+"/public/jobs/"+jobid+"/"+@phyloxml_file) > 5000000
+    # if the @phyloxml_file is too large, the treeviewer on the site is not available, and the software should be downloaded to view the tree 
+    if File.size( File.join( RAILS_ROOT, "public", "jobs", jobid, @phyloxml_file)) > 5000000
       @phyloxml_file = "treefile_no_placements.phyloxml"
     end
     getInfo
@@ -359,8 +360,6 @@ class RaxmlController < ApplicationController
     res  =  RaxmlResultsParser.new(rax.outfile)
     @filenames = res.filenames
     @names = res.names
-    @root  = "#{ENV['SERVER_ADDR']}"
-    @path = "/jobs/#{rax.jobid}/"
     if !(rax.errorfile.eql?(""))
       @filenames << rax.errorfile
       @names << "logfile"
@@ -499,7 +498,7 @@ class RaxmlController < ApplicationController
           jobid = value
           rax = Raxml.find(:first,:conditions => ["jobid = #{jobid}"])
           Raxml.destroy(rax.id)
-          command = "rm -r #{RAILS_ROOT}/public/jobs/#{jobid}"
+          command = "rm -r " + File.join( RAILS_ROOT, "public", "jobs", jobid)
           system command
         end
       end
