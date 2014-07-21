@@ -370,7 +370,7 @@ class RaxmlController < ApplicationController
   end
     
   def download
-    jobs_path = Pathname.new( "#{RAILS_ROOT}/public/jobs")
+    jobs_path = Pathname.new( File.join( RAILS_ROOT, "public", "jobs"))
     jobid    = File.basename( params[:jobid])
     filename = File.basename( params[:filename])
     file = jobs_path.join( jobid, filename).cleanpath
