@@ -316,23 +316,13 @@ class RaxmlController < ApplicationController
   def jobIsFinished?(id)
     @raxml = Raxml.find(:first, :conditions => ["jobid = #{id}"]) 
     path = File.join( RAILS_ROOT, "public", "jobs", id)
-    finished = false
-    Dir.glob(path+"current.log"){|file|
+    Dir.glob( File.join( path, "current.log")){|file|
       f = File.open(file,'r')
       fi = f.readlines
       if fi.size > 0
-       # if file =~ /submit\.sh\.e/
-          
-     #     @raxml.update_attribute(:errorfile,file)
-     #     f.close
-     #     return true
-     #   else
         fi.each do |line|
-        #  if line =~ /\s+ERROR[\s:]\s*/i
-        #    @raxml.update_attribute(:errorfile,file)
-        #    return true
           if line =~ /^done!\s*$/
-            @raxml.update_attribute(:status,"done") 
+            @raxml.update_attribute(:status,"done")
             return true
           end
         end
@@ -340,7 +330,7 @@ class RaxmlController < ApplicationController
       end
       f.close
     }
-    return finished       
+    return false       
   end
 
   def results

@@ -37,7 +37,7 @@ class RaxmlTreefileParser
     f = File.open(file,'wb')
     @data.each {|d| f.write(d)}
     f.close
-    cmd = "java -jar " + File.join( RAILS_ROOT, "bioprogs", "java", "treecheck.jar") + file
+    cmd = "java -jar " + File.join( RAILS_ROOT, "bioprogs", "java", "treecheck.jar ") + file
     # let RAxML check if phylip format is correct
     PTY.spawn(cmd) do |stdin, stdout, pid| 
       
