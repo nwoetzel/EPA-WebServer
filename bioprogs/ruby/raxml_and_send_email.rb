@@ -294,7 +294,7 @@ class RaxmlAndSendEmail
 
     # Concat result files
     if @raxml_options["-N"].nil?  # no bootstrap samples, concat RAxML Classification Likelihood weights
-      command = "cd #{@jobpath}; cat RAxML_classificationLikelihoodWeights.#{outname}.GENE* >  RAxML_classificationLikelihoodWeights.#{outname}"
+      command = "cd #{@jobpath}; cat RAxML_classificationLikelihoodWeights.#{outname}.GENE* > RAxML_classificationLikelihoodWeights.#{outname}"
     else
       command = "cd #{@jobpath}; cat RAxML_classification.#{outname}.GENE* > RAxML_classification.#{outname}"
     end
@@ -305,7 +305,7 @@ class RaxmlAndSendEmail
   
   def useUClust
     outfile = @jobpath+"cluster"
-    command = "#{RAILS_ROOT}/bioprogs/uclust/uclust32 --cluster #{@queryfile}  --uc #{outfile}.uc --id 0.90 --usersort --seedsout #{outfile}.fas 2>&1"
+    command = "#{RAILS_ROOT}/bioprogs/uclust/uclust32 --cluster #{@queryfile} --uc #{outfile}.uc --id 0.90 --usersort --seedsout #{outfile}.fas 2>&1"
     puts command
     system command
     # Not necessary anymore in uclust version 4.2
@@ -323,7 +323,7 @@ class RaxmlAndSendEmail
     ref = Reformat.new(@raxml_options["-s"])
     ref.reformatToStockholm
     ref.writeToFile(@jobpath+"alignment_file.sto")
-    command = "#{RAILS_ROOT}/bioprogs/hmmer/src/hmmbuild --dna  #{@jobpath}alignment_file.hmm #{@jobpath}alignment_file.sto "
+    command = "#{RAILS_ROOT}/bioprogs/hmmer/src/hmmbuild --dna #{@jobpath}alignment_file.hmm #{@jobpath}alignment_file.sto "
     puts command
     system command
     command = "#{RAILS_ROOT}/bioprogs/hmmer/src/hmmalign -o #{@jobpath}alignment_file2.sto --mapali #{@jobpath}alignment_file.sto  #{@jobpath}alignment_file.hmm #{@queryfile}  "
@@ -360,7 +360,7 @@ class RaxmlAndSendEmail
     command = "cd #{RAILS_ROOT}/bioprogs/java; java -jar convertToPhyloXML.jar #{treefile}"
     if @raxml_options["-x"].nil? # bootstrapping activated?
       file = @jobpath+"RAxML_classificationLikelihoodWeights."+@id
-      command = "#{command} #{file}  > #{@jobpath}treefile.phyloxml"
+      command = "#{command} #{file} > #{@jobpath}treefile.phyloxml"
       puts command
       system command
     else

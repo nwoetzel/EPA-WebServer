@@ -97,8 +97,7 @@ class Raxml < ActiveRecord::Base
   end
 
   ## collects the options for "raxml_and_send_email.rb" including the options for all following processing steps (RAxML, Uclust,Hmmer) and builds a shell file that is submited in the Batch system. 
-  def execude(link,id)
-        
+  def execute(link,id)
     opts = {"-s" => self.alifile, "-n" => self.outfile, "-m" => self.substmodel,  "-f" => self.speed  , "-link" => link, "-id" => id}  # id contains the job id 
     if emailValid?
       opts["-email"] = self.email
@@ -151,11 +150,13 @@ class Raxml < ActiveRecord::Base
     shell_file = "#{RAILS_ROOT}/public/jobs/#{id}/submit.sh"
     command = "#{RAILS_ROOT}/bioprogs/ruby/raxml_and_send_email.rb"
     opts.each_key {|k| command  = command+" "+k+" #{opts[k]} "}
-    puts command
+    Rails.logger.info( "command " + command)
     File.open(shell_file,'wb'){|file| file.write(command+";echo done!")}
 
     # submit shellfile into batch system 
-    system "qsub -o #{path} -j #{shell_file} "
+    submit_command = "qsub -o #{path} -j #{shell_file} "
+    Rails.logger.info( "submit job using: " + submit_command)
+    system submit_command
   end
 
   ## checks email format

@@ -1,19 +1,4 @@
 class RaxmlController < ApplicationController
-  def submit
-    @root  = "#{ENV['SERVER_ADDR']}"
-    @dna_model_options = ""
-    @aa_model_options = ""
-    @aa_matrices = ""
-    @par_model_options  =""
-    @model_options = ""
-    @heuristics =""
-    @heuristics_values =""
-    @ip_counter = 0;
-    @submission_counter = 0;
-    initialize_options
-    @raxml = Raxml.new
-  end
-
   def updateServerStatus
      system "qstat -f > #{RAILS_ROOT}/tmp/files/qstat.log" #update the server capacity utilisation
   end
@@ -65,8 +50,6 @@ class RaxmlController < ApplicationController
     getInfo
     
   end
-  
-
 
   def initialize_options
     models = ["GTRGAMMA","GTRCAT", "GTRCATI","GTRGAMMAI"]
@@ -92,7 +75,6 @@ class RaxmlController < ApplicationController
   end
 
   def getInfo
-
     # Visitors, job Submission infos
     ips = Userinfo.find(:all)
     if ips.size == 0
@@ -229,7 +211,7 @@ class RaxmlController < ApplicationController
       @use_bootstrap = "F"
     end
    
-     buildJobDir
+    buildJobDir
     @raxml = Raxml.new({ :alifile         => @alifile ,
                          :query           => @query, 
                          :outfile         => @outfile, 
@@ -258,7 +240,7 @@ class RaxmlController < ApplicationController
     if @raxml.save
       @raxml.update_attribute(:outfile,"#{@raxml.jobid}")
       link = url_for :controller => 'raxml', :action => 'results', :id => @raxml.jobid 
-      @raxml.execude(link,@raxml.jobid.to_s)
+      @raxml.execute(link,@raxml.jobid.to_s)
 
       ## save userinfos
       ip = @ip
