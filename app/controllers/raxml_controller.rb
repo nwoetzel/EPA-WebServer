@@ -398,9 +398,16 @@ class RaxmlController < ApplicationController
     end
   end
     
-  def download 
-    file = "#{RAILS_ROOT}/public/jobs/#{params[:jobid]}/#{params[:filename]}"
-    send_file file
+  def download
+    jobs_path = Pathname.new( "#{RAILS_ROOT}/public/jobs")
+    jobid    = File.basename( params[:jobid])
+    filename = File.basename( params[:filename])
+    file = jobs_path.join( jobid, filename).cleanpath
+    if( file.to_s =~ /#{jobs_path.to_s}/)
+      send_file file
+    else
+      raise ActionController::RoutingError.new('Not Found')
+    end
   end
 
   def treehelp
