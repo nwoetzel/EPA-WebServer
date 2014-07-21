@@ -1,5 +1,7 @@
 public/jobs/*
 !public/jobs/.gitkeep
+raxml_log/*
+!raxml_log/.gitkeep
 log/*
 db/*sqlite3
 config/initializers/session_store.rb
